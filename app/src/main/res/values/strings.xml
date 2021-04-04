@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Height Converter</string>
+    <string name="hint">Your value will appear here</string>
+</resources>
