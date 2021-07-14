@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">Height Converter</string>
+    <string name="app_name">Length Converter</string>
     <string name="hint">Your value will appear here</string>
+    <string name="to">To</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

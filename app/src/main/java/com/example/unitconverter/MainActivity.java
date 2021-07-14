@@ -1,6 +1,9 @@
 package com.example.unitconverter;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -10,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,441 +22,40 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText et1;
-    Spinner spinner1;
-    Spinner spinner2;
 
-    Button btn1;
-    TextView tv1;
-
-    String input1="";
-    int spr1=0,spr2=0;
+    TextView tvMain1,tvMain2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btn1 = (Button)findViewById(R.id.button);
-        et1 = (EditText)findViewById(R.id.editText1);
-        tv1 = (TextView)findViewById(R.id.textView2);
-        spinner1 = (Spinner)findViewById(R.id.spinner1);
-        spinner2 = (Spinner)findViewById(R.id.spinner2);
+        tvMain1=(TextView)findViewById(R.id.tv_main_1);
+        tvMain2=(TextView)findViewById(R.id.tv_main_2);
 
-        ArrayList<String> name = new ArrayList<String>();
-        name.add("Select Unit");
-        name.add("feet");
-        name.add("inch");
-        name.add("cm");
-        name.add("m");
-        name.add("mm");
-        name.add("km");
-
-
-
-        
-
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(MainActivity.this,
-                R.layout.snipper_item,name);
-
-
-
-        spinner1.setAdapter(myAdapter);
-        spinner2.setAdapter(myAdapter);
-
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        tvMain1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i1, long l) {
-                spinner1.setSelection(i1);
-                spr1=i1;
+            public void onClick(View v) {
+                replaceFragment(new LengthFragment());
             }
+        });
 
+        tvMain2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onClick(View v) {
+                replaceFragment(new WeightFragment());
             }
         });
 
 
-        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                spinner2.setSelection(i);
-                spr2=i;
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input1 = et1.getText().toString();
-
-                if(input1.matches("")){
-                    Toast.makeText(MainActivity.this,
-                            "Please enter values",
-                            Toast.LENGTH_SHORT).show();
-                }else{
-                    if(spr1==0 || spr2==0){
-                        Toast.makeText(MainActivity.this,
-                                "Select both units",
-                                Toast.LENGTH_SHORT).show();
-                    }else if(spr1==1 && spr2==1){
-                        tv1.setText(et1.getText().toString()+" "+name.get(spr2));
-                    }else if(spr1==1 && spr2==2){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", feetToInch(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==1 && spr2==3){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", feetToCm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==1 && spr2==4){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", feetToM(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==1 && spr2==5){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", feetToMm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==1 && spr2==6){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", feetToKm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }
-
-                    //////////////////////////////////////////////////////////////////////
-
-                    else if(spr1==2 && spr2==2){
-                        tv1.setText(et1.getText().toString()+" "+name.get(spr2));
-                    }else if(spr1==2 && spr2==1){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", InchToFeet(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==2 && spr2==3){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", InchToCm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==2 && spr2==4){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", InchToM(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==2 && spr2==5){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", InchToMm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==2 && spr2==6){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", InchToKm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }
-
-                    /////////////////////////////////////////////////////////////
-
-                    else if(spr1==3 && spr2==3){
-                        tv1.setText(et1.getText().toString()+" "+name.get(spr2));
-                    }else if(spr1==3 && spr2==1){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", CmToFeet(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==3 && spr2==2){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", CmToInch(temp));
-                        tv1.setText(s+" "+name.get(spr2));                    }else if(spr1==3 && spr2==4){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", CmToM(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==3 && spr2==5){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", CmToMm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==3 && spr2==6){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", CmToKm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }
-
-                    ///////////////////////////////////////////////////////
-
-                    else if(spr1==4 && spr2==4){
-                        tv1.setText(et1.getText().toString()+" "+name.get(spr2));
-                    }else if(spr1==4 && spr2==1){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MToFeet(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==4 && spr2==2){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MToInch(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==4 && spr2==3){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MToCm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==4 && spr2==5){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MToMm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==4 && spr2==6){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MToKm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }
-
-                    /////////////////////////////////////////////////////////////////////
-
-                    else if(spr1==5 && spr2==5){
-                        tv1.setText(et1.getText().toString()+" "+name.get(spr2));
-                    }else if(spr1==5 && spr2==1){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MmToFeet(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==5 && spr2==2){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MmToInch(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==5 && spr2==3){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MmToCm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==5 && spr2==4){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MmToM(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==5 && spr2==6){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", MmToKm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }
-
-                    /////////////////////////////////////////////////
-
-                    else if(spr1==6 && spr2==6){
-                        tv1.setText(et1.getText().toString()+" "+name.get(spr2));
-                    }else if(spr1==6 && spr2==1){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", KmToFeet(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==6 && spr2==2){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", KmToInch(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==6 && spr2==3){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", KmToCm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==6 && spr2==4){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", KmToM(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }else if(spr1==6 && spr2==5){
-                        double temp = Double.parseDouble(et1.getText().toString());
-                        String s = String.format("%.2f", KmToMm(temp));
-                        tv1.setText(s+" "+name.get(spr2));
-                    }
-                }
-            }
-        });
-
     }
 
+    private void replaceFragment(Fragment fragment) {
 
-    public static double feetToInch(double num){
-        double ans=0;
-        ans=(double) num*12;
-        return ans;
-    }
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fl1,fragment);
+        ft.commit();
 
-    public static double feetToCm(double num){
-        double ans=0;
-        ans=(double) num*30.48;
-        return ans;
-    }
-
-    public static double feetToM(double num){
-        double ans=0;
-        ans=(double) num/3.281;
-        return ans;
-    }
-
-    public static double feetToMm(double num){
-        double ans=0;
-        ans=(double) num*305;
-        return ans;
-    }
-
-    public static double feetToKm(double num){
-        double ans=0;
-        ans=(double) num/305;
-        return ans;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-
-
-    public static double InchToFeet(double num){
-        double ans=0;
-        ans=(double) num/12;
-        return ans;
-    }
-
-    public static double InchToCm(double num){
-        double ans=0;
-        ans=(double) num*2.54;
-        return ans;
-    }
-
-    public static double InchToM(double num){
-        double ans=0;
-        ans=(double) num/39.37;
-        return ans;
-    }
-
-    public static double InchToMm(double num){
-        double ans=0;
-        ans=(double) num*25.4;
-        return ans;
-    }
-
-    public static double InchToKm(double num){
-        double ans=0;
-        ans=(double) num/39370;
-        return ans;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////
-
-
-    public static double CmToFeet(double num){
-        double ans=0;
-        ans=(double) num/30.48;
-        return ans;
-    }
-
-    public static double CmToInch(double num){
-        double ans=0;
-        ans=(double) num/2.54;
-        return ans;
-    }
-
-    public static double CmToM(double num){
-        double ans=0;
-        ans=(double) num/100;
-        return ans;
-    }
-
-    public static double CmToMm(double num){
-        double ans=0;
-        ans=(double) num*10;
-        return ans;
-    }
-
-    public static double CmToKm(double num){
-        double ans=0;
-        ans=(double) num/100000;
-        return ans;
-    }
-
-    ////////////////////////////////////////////////////////////////////
-
-
-    public static double MToFeet(double num){
-        double ans=0;
-        ans=(double) num*3.281;
-        return ans;
-    }
-
-    public static double MToInch(double num){
-        double ans=0;
-        ans=(double) num*39.37;
-        return ans;
-    }
-
-    public static double MToCm(double num){
-        double ans=0;
-        ans=(double) num/100;
-        return ans;
-    }
-
-    public static double MToMm(double num){
-        double ans=0;
-        ans=(double) num*1000;
-        return ans;
-    }
-
-    public static double MToKm(double num){
-        double ans=0;
-        ans=(double) num/1000;
-        return ans;
-    }
-
-    ////////////////////////////////////////////////////////////////
-
-
-    public static double MmToFeet(double num){
-        double ans=0;
-        ans=(double) num/305;
-        return ans;
-    }
-
-    public static double MmToInch(double num){
-        double ans=0;
-        ans=(double) num/25.4   ;
-        return ans;
-    }
-
-    public static double MmToCm(double num){
-        double ans=0;
-        ans=(double) num/10;
-        return ans;
-    }
-
-    public static double MmToM(double num){
-        double ans=0;
-        ans=(double) num/1000;
-        return ans;
-    }
-
-    public static double MmToKm(double num){
-        double ans=0;
-        ans=(double) num/1000000;
-        return ans;
-    }
-
-    /////////////////////////////////////////////////////////////////
-
-    public static double KmToFeet(double num){
-        double ans=0;
-        ans=(double) num/305;
-        return ans;
-    }
-
-    public static double KmToInch(double num){
-        double ans=0;
-        ans=(double) num/25.4   ;
-        return ans;
-    }
-
-    public static double KmToCm(double num){
-        double ans=0;
-        ans=(double) num/10;
-        return ans;
-    }
-
-    public static double KmToM(double num){
-        double ans=0;
-        ans=(double) num/1000;
-        return ans;
-    }
-
-    public static double KmToMm(double num){
-        double ans=0;
-        ans=(double) num/1000000;
-        return ans;
     }
 }
